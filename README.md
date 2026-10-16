@@ -65,6 +65,8 @@ n8n · Google Sheets · Gmail (HTML con estilos en línea)
 
 ## Planilla
 
+![Planilla vacía, lista para usar](docs/06-planilla-vacia.png)
+
 El archivo `planilla/planilla_modelo_El_Tornillo.xlsx` tiene 4 hojas:
 
 - **Pedidos:** registro de consultas. Encabezados en la fila 4. Desplegables para Estado y Responsable, y formato condicional (fila roja si la urgencia es "Hoy" y el pedido no está en Listo o Entregado).
