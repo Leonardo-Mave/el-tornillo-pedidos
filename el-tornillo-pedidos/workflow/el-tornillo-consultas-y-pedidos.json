@@ -1,0 +1,484 @@
+{
+  "name": "El Tornillo — Consultas y pedidos",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Ferretería y Repuestos El Tornillo",
+        "formDescription": "Contanos qué necesitás y te respondemos a la brevedad.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nombre y apellido",
+              "fieldName": "nombre",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Mail",
+              "fieldType": "email",
+              "fieldName": "mail",
+              "placeholder": "tumail@ejemplo.com",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Teléfono / WhatsApp",
+              "fieldName": "telefono"
+            },
+            {
+              "fieldLabel": "Tipo de consulta",
+              "fieldType": "dropdown",
+              "fieldName": "tipo",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Presupuesto"
+                  },
+                  {
+                    "option": "Disponibilidad"
+                  },
+                  {
+                    "option": "Pedido"
+                  },
+                  {
+                    "option": "Reclamo"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Rubro",
+              "fieldType": "dropdown",
+              "fieldName": "rubro",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Ferretería"
+                  },
+                  {
+                    "option": "Repuestos auto/moto"
+                  },
+                  {
+                    "option": "Herramientas"
+                  },
+                  {
+                    "option": "Otros"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Detalle de lo que necesitás",
+              "fieldType": "textarea",
+              "fieldName": "detalle",
+              "placeholder": "Ej: pastillas de freno delanteras para Gol Trend 2014",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Cantidad",
+              "fieldType": "number",
+              "fieldName": "cantidad"
+            },
+            {
+              "fieldLabel": "Urgencia",
+              "fieldType": "dropdown",
+              "fieldName": "urgencia",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Hoy"
+                  },
+                  {
+                    "option": "Esta semana"
+                  },
+                  {
+                    "option": "Sin apuro"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Retira en local o envío",
+              "fieldType": "dropdown",
+              "fieldName": "entrega",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Retira en local"
+                  },
+                  {
+                    "option": "Envío"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "Enviar consulta",
+          "respondWithOptions": {
+            "values": {
+              "formSubmittedText": "¡Gracias! Recibimos tu consulta. Te enviamos un mail de confirmación."
+            }
+          },
+          "path": "el-tornillo-pedidos"
+        }
+      },
+      "id": "f0bedfa5-b162-49fe-8055-6a1b05a1c793",
+      "name": "Formulario de pedidos",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        240,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f-id",
+              "name": "ID",
+              "value": "=PED-{{ $now.toFormat(\"yyMMdd-HHmmss\") }}",
+              "type": "string"
+            },
+            {
+              "id": "f-fecha",
+              "name": "Fecha y hora",
+              "value": "={{ $now.toFormat(\"dd/MM/yyyy HH:mm\") }}",
+              "type": "string"
+            },
+            {
+              "id": "f-cliente",
+              "name": "Cliente",
+              "value": "={{ $json.nombre }}",
+              "type": "string"
+            },
+            {
+              "id": "f-mail",
+              "name": "Mail",
+              "value": "={{ $json.mail }}",
+              "type": "string"
+            },
+            {
+              "id": "f-tel",
+              "name": "Teléfono",
+              "value": "={{ $json.telefono ?? \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "f-tipo",
+              "name": "Tipo",
+              "value": "={{ $json.tipo }}",
+              "type": "string"
+            },
+            {
+              "id": "f-rubro",
+              "name": "Rubro",
+              "value": "={{ $json.rubro }}",
+              "type": "string"
+            },
+            {
+              "id": "f-detalle",
+              "name": "Detalle",
+              "value": "={{ $json.detalle }}",
+              "type": "string"
+            },
+            {
+              "id": "f-cant",
+              "name": "Cantidad",
+              "value": "={{ $json.cantidad || 1 }}",
+              "type": "number"
+            },
+            {
+              "id": "f-urg",
+              "name": "Urgencia",
+              "value": "={{ $json.urgencia }}",
+              "type": "string"
+            },
+            {
+              "id": "f-entrega",
+              "name": "Entrega",
+              "value": "={{ $json.entrega }}",
+              "type": "string"
+            },
+            {
+              "id": "f-estado",
+              "name": "Estado",
+              "value": "Nuevo",
+              "type": "string"
+            },
+            {
+              "id": "f-resp",
+              "name": "Responsable",
+              "value": "Sin asignar",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6978c8ac-20af-4354-a23d-042ce70e88be",
+      "name": "Armar datos del pedido",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        544,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "TU_ID_DE_PLANILLA"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Pedidos"
+        },
+        "columns": {
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false,
+          "mappingMode": "autoMapInputData",
+          "matchingColumns": [],
+          "schema": [
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "ID",
+              "id": "ID",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "Fecha y hora",
+              "id": "Fecha y hora",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "Cliente",
+              "id": "Cliente",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "Mail",
+              "id": "Mail",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "Teléfono",
+              "id": "Teléfono",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "Tipo",
+              "id": "Tipo",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "Rubro",
+              "id": "Rubro",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "Detalle",
+              "id": "Detalle",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "Cantidad",
+              "id": "Cantidad",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "Urgencia",
+              "id": "Urgencia",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "Entrega",
+              "id": "Entrega",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "Estado",
+              "id": "Estado",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "Responsable",
+              "id": "Responsable",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            }
+          ],
+          "value": {}
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED",
+          "locationDefine": {
+            "values": {
+              "headerRow": 4
+            }
+          },
+          "handlingExtraData": "ignoreIt"
+        }
+      },
+      "id": "c2b93b60-faf6-4fae-8cfd-5c9f50610577",
+      "name": "Guardar fila en la planilla",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        848,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Mail }}",
+        "subject": "=Recibimos tu consulta ({{ $json.ID }}) — El Tornillo",
+        "message": "=<div style='background:#f4f5f7;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#222222'><table role='presentation' align='center' width='100%' style='max-width:600px;margin:0 auto;background:#ffffff;border-radius:8px;border-collapse:collapse'><tr><td style='background:#1F3864;padding:22px 28px;color:#ffffff;border-radius:8px 8px 0 0'><div style='font-size:20px;font-weight:bold'>Ferretería y Repuestos El Tornillo</div><div style='font-size:13px;color:#c9d6ee;margin-top:4px'>Confirmación de tu consulta</div></td></tr><tr><td style='padding:28px'><p style='margin:0 0 6px;font-size:16px'>Hola <b>{{ $json.Cliente }}</b>,</p><p style='margin:0 0 20px;font-size:15px;color:#444444'>¡Gracias por escribirnos! Ya recibimos tu consulta y quedó registrada.</p><table role='presentation' width='100%' style='border-collapse:collapse;margin-bottom:24px'><tr><td style='background:#eef3fb;text-align:center;padding:18px;border-radius:8px'><div style='font-size:12px;letter-spacing:1px;color:#5a6b8c'>N° DE CONSULTA</div><div style='font-size:26px;font-weight:bold;color:#1F3864;margin-top:4px'>{{ $json.ID }}</div></td></tr></table><div style='font-size:12px;letter-spacing:1px;color:#888888;margin-bottom:6px'>RESUMEN DE TU PEDIDO</div><table role='presentation' width='100%' style='border-collapse:collapse;font-size:14px;margin-bottom:24px'><tr><td style='padding:10px 0;border-bottom:1px solid #e6e6e6;color:#777777;width:38%'>Tipo de consulta</td><td style='padding:10px 0;border-bottom:1px solid #e6e6e6'><b>{{ $json.Tipo }}</b></td></tr><tr><td style='padding:10px 0;border-bottom:1px solid #e6e6e6;color:#777777'>Rubro</td><td style='padding:10px 0;border-bottom:1px solid #e6e6e6'>{{ $json.Rubro }}</td></tr><tr><td style='padding:10px 0;border-bottom:1px solid #e6e6e6;color:#777777'>Detalle</td><td style='padding:10px 0;border-bottom:1px solid #e6e6e6'>{{ $json.Detalle }}</td></tr><tr><td style='padding:10px 0;border-bottom:1px solid #e6e6e6;color:#777777'>Cantidad</td><td style='padding:10px 0;border-bottom:1px solid #e6e6e6'>{{ $json.Cantidad }}</td></tr><tr><td style='padding:10px 0;border-bottom:1px solid #e6e6e6;color:#777777'>Entrega</td><td style='padding:10px 0;border-bottom:1px solid #e6e6e6'>{{ $json.Entrega }}</td></tr><tr><td style='padding:10px 0;color:#777777'>Urgencia</td><td style='padding:10px 0'><span style='display:inline-block;padding:3px 12px;border-radius:12px;font-size:12px;font-weight:bold;background:{{ $json.Urgencia === 'Hoy' ? '#fde8e8' : '#e3f4e6' }};color:{{ $json.Urgencia === 'Hoy' ? '#c00000' : '#1e7b34' }}'>{{ $json.Urgencia }}</span></td></tr></table><table role='presentation' width='100%' style='border-collapse:collapse;margin-bottom:20px'><tr><td style='background:#fff8e6;border-left:4px solid #f0b429;padding:14px 16px;font-size:14px'><b>¿Qué sigue?</b><br>{{ $json.Urgencia === 'Hoy' ? 'Como marcaste urgencia, te respondemos hoy antes de las 18 hs.' : $json.Urgencia === 'Esta semana' ? 'Te respondemos dentro de las próximas 24 hs hábiles.' : 'Te respondemos dentro de los próximos 2 días hábiles.' }}</td></tr></table><p style='margin:0;font-size:14px;color:#555555'>Si necesitás cambiar algo, respondé este mail indicando el número <b>{{ $json.ID }}</b>.</p></td></tr><tr><td style='background:#f4f5f7;padding:18px 28px;font-size:12px;color:#777777;text-align:center;border-radius:0 0 8px 8px'><b>Equipo de Ferretería y Repuestos El Tornillo</b><br>Lunes a viernes de 8 a 12 y de 16 a 20 · Sábados de 8 a 13<br><span style='color:#999999'>Mail automático de demostración. Negocio ficticio.</span></td></tr></table></div>",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "El Tornillo"
+        }
+      },
+      "id": "1ea2f385-eff0-4768-81bd-7aa78cc34cc9",
+      "name": "Mail de confirmación al cliente",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        848,
+        304
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "dueno@tunegocio.com",
+        "subject": "={{ $json.Urgencia === \"Hoy\" ? \"🔴 URGENTE: \" : \"🟢 \" }}Nuevo {{ $json.Tipo.toLowerCase() }} de {{ $json.Cliente }} ({{ $json.ID }})",
+        "message": "=<div style='background:#f4f5f7;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#222222'><table role='presentation' align='center' width='100%' style='max-width:600px;margin:0 auto;background:#ffffff;border-radius:8px;border-collapse:collapse'><tr><td style='background:{{ $json.Urgencia === 'Hoy' ? '#c00000' : '#2e7d32' }};padding:16px 28px;color:#ffffff;font-size:16px;font-weight:bold;border-radius:8px 8px 0 0'>{{ $json.Urgencia === 'Hoy' ? '🔴 URGENTE: responder hoy' : '🟢 Nueva consulta' }}</td></tr><tr><td style='padding:28px'><div style='font-size:12px;letter-spacing:1px;color:#888888'>SISTEMA DE PEDIDOS · EL TORNILLO</div><div style='font-size:20px;font-weight:bold;color:#1F3864;margin:6px 0 4px'>Nuevo {{ $json.Tipo.toLowerCase() }} de {{ $json.Cliente }}</div><div style='font-size:14px;color:#666666;margin-bottom:20px'>N° <b>{{ $json.ID }}</b> · {{ $json['Fecha y hora'] }}</div><table role='presentation' width='100%' style='border-collapse:collapse;font-size:14px'><tr><td style='padding:10px 0;border-bottom:1px solid #e6e6e6;color:#777777;width:34%'>Cliente</td><td style='padding:10px 0;border-bottom:1px solid #e6e6e6'><b>{{ $json.Cliente }}</b></td></tr><tr><td style='padding:10px 0;border-bottom:1px solid #e6e6e6;color:#777777'>Contacto</td><td style='padding:10px 0;border-bottom:1px solid #e6e6e6'><a href='mailto:{{ $json.Mail }}' style='color:#1a56c4'>{{ $json.Mail }}</a><br>{{ $json['Teléfono'] || 'Teléfono no indicado' }}</td></tr><tr><td style='padding:10px 0;border-bottom:1px solid #e6e6e6;color:#777777'>Tipo / Rubro</td><td style='padding:10px 0;border-bottom:1px solid #e6e6e6'>{{ $json.Tipo }} / {{ $json.Rubro }}</td></tr><tr><td style='padding:10px 0;border-bottom:1px solid #e6e6e6;color:#777777'>Detalle</td><td style='padding:10px 0;border-bottom:1px solid #e6e6e6'>{{ $json.Detalle }}</td></tr><tr><td style='padding:10px 0;border-bottom:1px solid #e6e6e6;color:#777777'>Cantidad</td><td style='padding:10px 0;border-bottom:1px solid #e6e6e6'>{{ $json.Cantidad }}</td></tr><tr><td style='padding:10px 0;border-bottom:1px solid #e6e6e6;color:#777777'>Entrega</td><td style='padding:10px 0;border-bottom:1px solid #e6e6e6'>{{ $json.Entrega }}</td></tr><tr><td style='padding:10px 0;color:#777777'>Urgencia</td><td style='padding:10px 0'><span style='display:inline-block;padding:3px 12px;border-radius:12px;font-size:12px;font-weight:bold;background:{{ $json.Urgencia === 'Hoy' ? '#fde8e8' : '#e3f4e6' }};color:{{ $json.Urgencia === 'Hoy' ? '#c00000' : '#1e7b34' }}'>{{ $json.Urgencia }}</span></td></tr></table><table role='presentation' style='border-collapse:collapse;margin:24px 0 18px'><tr><td style='background:#1F3864;border-radius:6px'><a href='https://docs.google.com/spreadsheets/d/TU_ID_DE_PLANILLA/edit' style='display:inline-block;padding:12px 22px;color:#ffffff;text-decoration:none;font-weight:bold;font-size:14px'>Abrir planilla de pedidos</a></td></tr></table><p style='margin:0;font-size:14px;color:#555555'>La consulta ya quedó cargada en la planilla. Para tomarla, cambiá el <b>Estado</b> a <b>En proceso</b> y asignate como <b>Responsable</b>.</p></td></tr><tr><td style='background:#f4f5f7;padding:16px 28px;font-size:12px;color:#999999;text-align:center;border-radius:0 0 8px 8px'>Mail automático de demostración. Negocio ficticio.</td></tr></table></div>",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "Sistema de pedidos El Tornillo"
+        }
+      },
+      "id": "7d9fc974-c4ed-429a-a1a4-50c6ab1df52c",
+      "name": "Aviso al dueño del negocio",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        848,
+        480
+      ],
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Formulario de pedidos": {
+      "main": [
+        [
+          {
+            "node": "Armar datos del pedido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Armar datos del pedido": {
+      "main": [
+        [
+          {
+            "node": "Guardar fila en la planilla",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mail de confirmación al cliente",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Aviso al dueño del negocio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
